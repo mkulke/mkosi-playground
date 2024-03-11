@@ -1,0 +1,2 @@
+enable mgns.service
+enable systemd-networkd.service

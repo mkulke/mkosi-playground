@@ -1,0 +1,5 @@
+[Match]
+Driver=hv_netvsc
+
+[Network]
+DHCP=yes

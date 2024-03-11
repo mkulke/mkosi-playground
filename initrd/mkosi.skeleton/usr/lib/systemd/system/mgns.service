@@ -1,0 +1,17 @@
+[Unit]
+Description=Test oneshot unit
+#After=network.target systemd-networkd.service
+Requires=systemd-networkd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+#ExecStartPre=/usr/sbin/ip address add dev eth0 scope link 169.254.1.0/16
+#ExecStartPre=/usr/sbin/ip link set eth0 up
+ExecStart=/usr/bin/afterburn --provider=azure --check-in
+#ExecStartPre=/usr/sbin/dhclient
+#ExecStart=/usr/bin/echo ohai
+
+[Install]
+#WantedBy=initrd.target
+WantedBy=sysinit.target
