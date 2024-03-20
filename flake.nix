@@ -14,6 +14,7 @@
         project-buildInputs = with pkgs; [
           dnf5
           mkosi-full
+          mtools
           systemd
         ];
       in {
