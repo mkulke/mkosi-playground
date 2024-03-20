@@ -144,16 +144,16 @@ func createVM(name string) (*VMResources, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Created network interface: %s", *nic.ID)
+	log.Printf("created network interface: %s", *nic.ID)
 
 	diskName := name + "-disk"
 	virtualMachine, err := createVirtualMachine(ctx, *nic.ID, diskName, name)
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Created network virtual machine: %s", *virtualMachine.ID)
+	log.Printf("created network virtual machine: %s", *virtualMachine.ID)
 
-	log.Println("Virtual machine created successfully")
+	log.Println("virtual machine created successfully")
 
 	return &VMResources{
 		vmName:   name,
@@ -184,7 +184,7 @@ func cleanup(resources *VMResources) error {
 	}
 	log.Println("deleted network interface")
 
-	log.Println("success deleted virtual machine.")
+	log.Println("virtual machine deleted successfully")
 
 	return nil
 }
