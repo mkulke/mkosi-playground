@@ -43,9 +43,11 @@ jobs:
         python-version: '3.11' 
 
     - name: Install mkosi
-      run: pip install git+https://github.com/systemd/mkosi.git@v21
+      run: |
+        pip install git+https://github.com/systemd/mkosi.git@v21
+        cp $(which mkosi) /usr/local/bin/mkosi
 
     - name: mkosi
       run: |
-        mkosi -C ./initrd build
-        mkosi build
+        sudo mkosi -C ./initrd build
+        sudo mkosi build
