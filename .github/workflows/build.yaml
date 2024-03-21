@@ -1,4 +1,4 @@
-name: build
+name: build image
 
 on:
   workflow_dispatch:
@@ -7,10 +7,9 @@ on:
     - main
 
 jobs:
-  image:
-    name: Build image
-    # runs-on: ubuntu-latest
-    runs-on: ubuntu-20.04
+  nix:
+    name: Build image within a nix flake
+    runs-on: ubuntu-22.04
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -21,3 +20,32 @@ jobs:
       run: |
         nix develop -c mkosi -C ./initrd build
         nix develop -c mkosi build
+
+  host:
+    name: Build image using host tools
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          btrfs-progs \
+          bubblewrap \
+          cryptsetup-bin \
+          lvm2 \
+          mtools
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11' 
+
+    - name: Install mkosi
+      run: pip install git+https://github.com/systemd/mkosi.git@v21
+
+    - name: mkosi
+      run: |
+        mkosi -C ./initrd build
+        mkosi build
