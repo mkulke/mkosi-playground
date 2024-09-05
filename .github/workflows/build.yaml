@@ -18,6 +18,7 @@ jobs:
 
     - name: mkosi
       run: |
+        nix develop -c mkosi genkey
         nix develop -c mkosi -C ./initrd build
         nix develop -c mkosi build
 
@@ -36,7 +37,8 @@ jobs:
           bubblewrap \
           cryptsetup-bin \
           lvm2 \
-          mtools
+          mtools \
+          sbsigntool
 
     - uses: actions/setup-python@v5
       with:
@@ -49,5 +51,6 @@ jobs:
 
     - name: mkosi
       run: |
+        sudo mkosi genkey
         sudo mkosi -C ./initrd build
         sudo mkosi build
