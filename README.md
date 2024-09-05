@@ -6,22 +6,28 @@ Building azure images with mkosi
 
 nix w/ flakes support (https://nixos.org/nix/)
 
-## Usage
+## Build
 
-### Development environment
+### Enter development environment
 
 ```bash
 nix develop
 ```
 
-### Build
+### Create secure boot key
+
+```bash
+mkosi genkey
+```
+
+### Build raw image
 
 ```bash
 mkosi -C ./initrd build
 mkosi build
 ```
 
-### Qemu
+### Test in qemu
 
 Use root for KVM acceleration
 
@@ -29,17 +35,32 @@ Use root for KVM acceleration
 sudo $(which mkosi) qemu
 ``` 
 
-### Publish to image gallery
+## Publish to Azure
+
+### Convert secure boot certificate
 
 ```bash
-make publish
+openssl x509 -in mkosi.crt -out additionalsignature.der -outform DER
+base64 -w0 additionalsignature.der
 ```
 
-### Deploy
+### Edit uplosi.conf
+
+Populate the `uplosi.conf` values according to the image gallery and image definition. Put the base64 encoded certificate string into the `additionalSignatures` list.
+
+Note: The image definition has to support trusted launch.
+
+### Publish
+
+```bash
+uplosi upload image.raw
+```
+
+## Deploy
 
 ```bash
 cd launch-vm
 go mod tidy
 go build
-./launch-vm
+./launch-vm -h
 ```
