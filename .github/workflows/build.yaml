@@ -9,7 +9,7 @@ on:
 jobs:
   nix:
     name: Build image within a nix flake
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
 
   host:
     name: Build image using host tools
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -36,9 +36,11 @@ jobs:
           btrfs-progs \
           bubblewrap \
           cryptsetup-bin \
+          dnf \
           lvm2 \
           mtools \
-          sbsigntool
+          sbsigntool \
+          systemd-ukify
 
     - uses: actions/setup-python@v5
       with:
@@ -46,7 +48,7 @@ jobs:
 
     - name: Install mkosi
       run: |
-        pip install git+https://github.com/systemd/mkosi.git@v21
+        pip install git+https://github.com/systemd/mkosi.git@v18
         cp $(which mkosi) /usr/local/bin/mkosi
 
     - name: mkosi
