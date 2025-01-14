@@ -5,8 +5,37 @@ on:
   push:
     branches:
     - main
+    - docker
 
 jobs:
+  docker:
+    name: Build image with docker
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup dockerx builder
+      run: |
+        docker buildx create \
+          --driver-opt image=moby/buildkit:master \
+          --name insecure-builder \
+          --buildkitd-flags '--allow-insecure-entitlement security.insecure'
+        docker buildx use insecure-builder
+
+    - name: Build image
+      env:
+        MKOSI_VERSION: v22
+      run: |
+        mkdir build
+        docker buildx build \
+          -t mkosi-build \
+          --build-arg MKOSI_VERSION \
+          --progress=plain \
+          -o type=local,dest=$PWD/build \
+          --allow security.insecure \
+          .
+
   nix:
     name: Build image within a nix flake
     runs-on: ubuntu-22.04
@@ -30,6 +59,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install dependencies
+
       run: |
         sudo apt-get update
         sudo apt-get install -y \
